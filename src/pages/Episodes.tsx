@@ -1,6 +1,6 @@
 import { Grid, IconButton, makeStyles } from "@material-ui/core"
 import { ArrowBackIosOutlined } from "@material-ui/icons"
-import React from "react"
+import React, { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useHistory } from "react-router"
 import Header from "../components/Header"
@@ -27,8 +27,14 @@ const Episodes: React.FC = () => {
     (state: AppState) => state.movieState.movieEpisodes
   )
 
+  useEffect(() => {
+    if (episodes.length === 0) {
+      history.replace("/home")
+    }
+  }, [])
+
   const backButtonhandler = () => {
-    dispatch(clearSearchedMovies())
+    // dispatch(clearSearchedMovies())
     history.goBack()
   }
 
@@ -41,7 +47,6 @@ const Episodes: React.FC = () => {
             <ArrowBackIosOutlined />
             back
           </IconButton>
-          <h3>Search Result</h3>
           <Grid container justify="center" spacing={3}>
             {episodes.map((episodes, index) => (
               <Grid key={index} item xs={12} sm={6} md={4}>

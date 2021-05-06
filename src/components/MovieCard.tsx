@@ -62,7 +62,6 @@ const MovieCard: React.FC<MovieCardProps> = (props) => {
   const showDetailhandler = async (id: number) => {
     switch (props.purpose) {
       case "episodes":
-        await dispatch(clearMovieEpisodes())
         await dispatch(getEpisodesFromAPI(props.id))
         await history.push("/episodes")
         break

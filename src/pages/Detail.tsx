@@ -26,6 +26,15 @@ const useStyles = makeStyles({
   movieImage: {
     textAlign: "left",
   },
+  movieTitleWrapper: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  backIcon: {
+    padding: "2%",
+    marginBlockStart: "0.67em",
+    marginBlockEnd: "0.67em",
+  },
   genreWrapper: {
     display: "flex",
     flexDirection: "row",
@@ -55,6 +64,16 @@ const Detail: React.FC = () => {
     (state: AppState) => state.movieState.movieSeasons
   )
 
+  const searchedMovies = useSelector(
+    (state: AppState) => state.movieState.searchedMovies
+  )
+
+  useEffect(() => {
+    if (searchedMovies.length === 0) {
+      history.replace("/home")
+    }
+  }, [])
+
   const backButtonHandler = () => {
     dispatch(clearMovieDetail())
     history.goBack()
@@ -63,20 +82,26 @@ const Detail: React.FC = () => {
   return (
     <div className={classes.Detail}>
       <Header title="Detail" />
-      <IconButton edge="start" onClick={() => backButtonHandler()}>
-        <ArrowBackIosOutlined />
-      </IconButton>
+
       {movieDetail ? (
         <Grid container spacing={3} className={classes.girdWrapper}>
           <Grid item xs={12}>
-            <h1>{movieDetail.title}</h1>
             <Grid container>
-              <Grid item xs={12} md={4}>
-                <img
-                  src={movieDetail.image}
-                  alt={movieDetail.title}
-                  className={classes.movieImage}
-                />
+              <Grid item xs={1} className={classes.backIcon}>
+                <IconButton edge="start" onClick={() => backButtonHandler()}>
+                  <ArrowBackIosOutlined />
+                </IconButton>
+              </Grid>
+              <Grid item xs={11}>
+                <h1>{movieDetail.title}</h1>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Divider variant="middle" />
+          <Grid item xs={12}>
+            <Grid container>
+              <Grid item xs={12} md={4} className={classes.movieImage}>
+                <img src={movieDetail.image} alt={movieDetail.title} />
               </Grid>
               <Grid item xs={12} md={8}>
                 <Typography variant="body2" component="p" align="left">
@@ -100,7 +125,7 @@ const Detail: React.FC = () => {
           <Divider variant="middle" />
           <Divider light />
           <Grid item xs={12} className={classes.seasonsWrapper}>
-            <p>Total Seasons: {movieDetail.seasonNumber}</p>
+            <h4>Total Seasons: {movieDetail.seasonNumber}</h4>
             <Grid container spacing={3}>
               {movieSeasons.map((season, index) => (
                 <Grid item xs={12} md={3}>
