@@ -1,9 +1,9 @@
 export interface Movie {
     id: number
-    image: string
+    image: string | undefined
     title: string
-    seasonNumber?: number
-    episodeNumber?: number
+    seasonNumber?: number | undefined
+    episodeNumber?: number | undefined
     summary: string
     detailUrl: string
 }
