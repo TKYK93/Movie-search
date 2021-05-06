@@ -70,7 +70,7 @@ const SearchBar: React.FC = () => {
       <Divider orientation="vertical" flexItem />
       <InputBase
         className={classes.input}
-        placeholder="Search Movies"
+        placeholder="Search Series"
         onChange={(e) => {
           searchSingleMovieHandler(e.target.value)
         }}

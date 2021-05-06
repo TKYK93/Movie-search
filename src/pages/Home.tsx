@@ -9,15 +9,10 @@ import { Movie } from "../models/Movie"
 import { AppState } from "../redux/store"
 
 const useStyles = makeStyles({
-  Home: {
-    // marign: 0,
-    // padding: 0,
-    // boxSizing: "border-box",
-  },
   countrySelectWrapper: {
     display: "flex",
     flexDirection: "row",
-    margin: "3% auto",
+    margin: "1% auto",
     justifyContent: "center",
   },
   moviesWrapper: {
@@ -35,13 +30,17 @@ const pulldownInfo = {
   options: ["US", "SE"],
 }
 
+const todaysDate = (): string => {
+  const today = new Date().toISOString()
+  return today.split("T")[0]
+}
+
 const Home: React.FC = () => {
   const classes = useStyles()
   const [todaysMovies, setTodaysMovies] = useState<Movie[]>([])
   const searchedMoviesList = useSelector(
     (state: AppState) => state.movieState.searchedMovies
   )
-  console.log(todaysMovies)
   const selectedCountry = useSelector(
     (state: AppState) => state.movieState.selectedCountry
   )
@@ -49,9 +48,8 @@ const Home: React.FC = () => {
   useEffect(() => {
     setTodaysMovies([])
     movieAxios
-      .get(`/schedule?country=${selectedCountry}`)
+      .get(`/schedule?country=${selectedCountry}&date=${todaysDate()}`)
       .then((res) => {
-        console.log("res.data at Home>>>", res.data)
         if (res.data.length === 0) {
           console.log("No data available")
           return void 0
@@ -76,14 +74,14 @@ const Home: React.FC = () => {
   }, [selectedCountry])
 
   return (
-    <div className={classes.Home}>
+    <div className="Home">
       <Header title="Home" />
       <div className={classes.moviesWrapper}>
         <Grid container justify="center" spacing={3}>
           {searchedMoviesList.length > 0 ? (
             searchedMoviesList.map((searchedMovie, index) => (
               <Grid key={index} item xs={12} sm={6} md={4}>
-                <MovieCard {...searchedMovie} />
+                <MovieCard {...searchedMovie} purpose="episodes" />
               </Grid>
             ))
           ) : (
@@ -98,11 +96,11 @@ const Home: React.FC = () => {
               {todaysMovies.length > 0 ? (
                 todaysMovies.map((movie: Movie, index) => (
                   <Grid key={index} item xs={12} sm={6} md={4}>
-                    <MovieCard {...movie} />
+                    <MovieCard {...movie} purpose="home" />
                   </Grid>
                 ))
               ) : (
-                <div>No Schedules Shows today</div>
+                <div>No Scheduled Shows today</div>
               )}
             </>
           )}
