@@ -1,12 +1,18 @@
-import React from "react"
+import React, { useState } from "react"
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles"
 import Paper from "@material-ui/core/Paper"
 import InputBase from "@material-ui/core/InputBase"
 import IconButton from "@material-ui/core/IconButton"
 import MenuIcon from "@material-ui/icons/Menu"
 import SearchIcon from "@material-ui/icons/Search"
-import { getSearchedMoviesFromAPI } from "../redux/movieRedux/movieThunk"
+import {
+  getSearchedMoviesFromAPI,
+  getSingleSearchedMovieFromAPI,
+} from "../redux/movieRedux/movieThunk"
 import { useDispatch } from "react-redux"
+import { Divider } from "@material-ui/core"
+import { useHistory } from "react-router"
+import { clearSearchedMovies } from "../redux/movieRedux/movieActions"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,9 +39,27 @@ const useStyles = makeStyles((theme: Theme) =>
 const SearchBar: React.FC = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const history = useHistory()
+  const [input, setInput] = useState<string>("")
+  const searchDisable = input === "" ? true : false
 
-  const searchWordHandler = (searchWord: string) => {
-    dispatch(getSearchedMoviesFromAPI(searchWord))
+  const searchSingleMovieHandler = (searchWord: string) => {
+    if (searchWord === "") {
+      return dispatch(clearSearchedMovies())
+    } else {
+      setInput(searchWord)
+      dispatch(getSingleSearchedMovieFromAPI(searchWord))
+    }
+  }
+
+  const searchMoviesHandler = async (e: any) => {
+    if (input === "") {
+      return void 0
+    }
+    await e.preventDefault()
+    await dispatch(getSearchedMoviesFromAPI(input))
+    await setInput("")
+    await history.push(`/searchResult/${input}`)
   }
 
   return (
@@ -43,18 +67,20 @@ const SearchBar: React.FC = () => {
       <IconButton className={classes.iconButton} aria-label="menu">
         <MenuIcon />
       </IconButton>
+      <Divider orientation="vertical" flexItem />
       <InputBase
         className={classes.input}
         placeholder="Search Movies"
-        inputProps={{ "aria-label": "search google maps" }}
         onChange={(e) => {
-          searchWordHandler(e.target.value)
+          searchSingleMovieHandler(e.target.value)
         }}
       />
       <IconButton
         type="submit"
         className={classes.iconButton}
         aria-label="search"
+        onClick={searchMoviesHandler}
+        disabled={searchDisable}
       >
         <SearchIcon />
       </IconButton>

@@ -16,13 +16,10 @@ export const getSearchedMoviesFromAPI = (searchWord: string): ThunkAction<void, 
     } else {
       let tempArray: Movie[] = []
       res.data.forEach((movieInfo: any) => {
-        console.log("movieInfo",movieInfo)
         const movieData: Movie = {
           id: movieInfo.show.id,
           title: movieInfo.show.name,
-          image: movieInfo.show.image.original || "no image",
-          seasonNumber: movieInfo.show.season,
-          episodeNumber: movieInfo.show.number,
+          image: movieInfo.show.image?.original || undefined,
           summary: movieInfo.show.summary || "No summary",
           detailUrl: movieInfo.show.url
         }
@@ -34,20 +31,48 @@ export const getSearchedMoviesFromAPI = (searchWord: string): ThunkAction<void, 
   .catch((err) => console.log(err))
 }
 
+export const getSingleSearchedMovieFromAPI = (searchWord: string): ThunkAction<void, RootReducer, unknown, Action<string>> => async (dispatch) => {
+  movieAxios
+  .get(`/singlesearch/shows?q=${searchWord}&embed=seasons`)
+  .then((res) => {
+    if (res.data.length === 0) {
+      console.log("No data available")
+      return void 0
+    } else {
+      let tempArray: Movie[] = []
+      res.data._embedded.seasons.forEach((movieInfo: any) => {
+        const movieData: Movie = {
+          id: movieInfo.id,
+          title: res.data.name + movieInfo.number,
+          image: movieInfo.image?.original || undefined,
+          seasonNumber: movieInfo.number,
+          episodeNumber: movieInfo.episodeOrder,
+          summary: movieInfo.summary || "No summary",
+          detailUrl: movieInfo.url
+        }
+        tempArray.push(movieData)
+      })
+      dispatch(getSearchedMovies(tempArray))
+    }
+  })
+  .catch((err) => console.log(err))
+}
+
 export const getMovieDetailFromAPI = (movieId: number): ThunkAction<void, RootReducer, unknown, Action<string>> => async (dispatch) => {
   movieAxios
-  .get(`/shows/${movieId}`)
+  .get(`/shows/${movieId}?embed[]=seasons&embed[]=episodes&embed[]=cast`)
   .then((res) => {
     if (!res.data) {
       console.log("No data available")
       return void 0
     } else {
+      console.log("detailInfo>>", res.data)
       const detailInfo:MovieDetail = {
         id: res.data.id,
-        image: res.data.image.original ,
+        image: res.data.image.medium || undefined ,
         title: res.data.name,
-        seasonNumber: res.data.season || "N/A", 
-        episodeNumber: res.data.seasonNumber || "N/A", 
+        seasonNumber: res.data._embedded.seasons.length || "N/A", 
+        episodeNumber: res.data._embedded.episodes.length || "N/A", 
         summary: res.data.summary,
         detailUrl: res.data.url,
         genres: res.data.genres,

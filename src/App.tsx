@@ -6,7 +6,9 @@ import {
   Redirect,
 } from "react-router-dom"
 import "./App.css"
+import Detail from "./pages/Detail"
 import Home from "./pages/Home"
+import SearchedResult from "./pages/SearchResult"
 
 const App: React.FC = () => {
   return (
@@ -15,7 +17,12 @@ const App: React.FC = () => {
         <Switch>
           <Redirect exact from="/" to="home" />
           <Route exact path={"/home"} component={Home} />
-          <Home />
+          <Route exact path={"/detail"} component={Detail} />
+          <Route
+            exact
+            path={"/searchResult/:word"}
+            component={SearchedResult}
+          />
         </Switch>
       </div>
     </Router>

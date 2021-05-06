@@ -12,6 +12,9 @@ import { truncate } from "../utils"
 import parse from "html-react-parser"
 import { useDispatch } from "react-redux"
 import { getMovieDetailFromAPI } from "../redux/movieRedux/movieThunk"
+import { useHistory } from "react-router"
+import NoImg from "../resources/NoImg.png"
+import { clearMovieDetail } from "../redux/movieRedux/movieActions"
 
 const useStyles = makeStyles({
   root: {
@@ -30,11 +33,13 @@ const useStyles = makeStyles({
 
 const MovieCard: React.FC<Movie> = (props) => {
   const classes = useStyles()
+  const history = useHistory()
   const dispatch = useDispatch()
 
-  const showDetailhandler = (id: number) => {
-    console.log("id of selectedMovie>>", id)
-    dispatch(getMovieDetailFromAPI(id))
+  const showDetailhandler = async (id: number) => {
+    await dispatch(clearMovieDetail())
+    await dispatch(getMovieDetailFromAPI(id))
+    await history.push("/detail")
   }
   return (
     <Card className={classes.root}>
@@ -42,19 +47,19 @@ const MovieCard: React.FC<Movie> = (props) => {
       <CardActionArea>
         <CardMedia
           className={classes.media}
-          image={props.image}
+          image={props.image !== undefined || "" ? props.image : NoImg}
           title={props.title}
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
-            {props.title}
+            {truncate(props.title, 50)}
           </Typography>
           <div className={classes.content_card_header}>
             <Typography gutterBottom component="p">
-              Season: {props.seasonNumber ? props.seasonNumber : "N/A"}
+              {props.seasonNumber ? `Season: ${props.seasonNumber}` : ""}
             </Typography>
             <Typography gutterBottom component="p">
-              Episode: {props.episodeNumber ? props.episodeNumber : "N/A"}
+              {props.episodeNumber ? `Episode: ${props.episodeNumber}` : ""}
             </Typography>
           </div>
           <Typography variant="body2" color="textSecondary" component="p">
