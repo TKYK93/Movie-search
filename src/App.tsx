@@ -7,6 +7,7 @@ import {
 } from "react-router-dom"
 import "./App.css"
 import Detail from "./pages/Detail"
+import Episodes from "./pages/Episodes"
 import Home from "./pages/Home"
 import SearchedResult from "./pages/SearchResult"
 
@@ -23,6 +24,7 @@ const App: React.FC = () => {
             path={"/searchResult/:word"}
             component={SearchedResult}
           />
+          <Route exact path={"/episodes"} component={Episodes} />
         </Switch>
       </div>
     </Router>
