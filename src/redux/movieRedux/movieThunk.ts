@@ -83,8 +83,7 @@ export const getMovieDetailFromAPI = (movieId: number): ThunkAction<void, RootRe
           title: movieInfo.name,
           image: movieInfo.image?.original || undefined,
           summary: movieInfo.summary || "No summary",
-          seasonNumber: movieInfo.season,
-          episodeNumber: movieInfo.number,
+          seasonNumber: movieInfo.number,
           detailUrl: movieInfo.url
         }
         tempArray.push(movieData)
