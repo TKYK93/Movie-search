@@ -4,6 +4,7 @@ import { useSelector } from "react-redux"
 import { movieAxios } from "../axios"
 import Header from "../components/Header"
 import MovieCard from "../components/MovieCard"
+import Pulldown from "../components/Pulldown"
 import { Movie } from "../models/Movie"
 import { AppState } from "../redux/store"
 
@@ -13,8 +14,14 @@ const useStyles = makeStyles({
     // padding: 0,
     // boxSizing: "border-box",
   },
-  searchMoviesWrapper: {
-    padding: "0 3%",
+  countrySelectWrapper: {
+    display: "flex",
+    flexDirection: "row",
+    margin: "3% auto",
+    justifyContent: "center",
+  },
+  moviesWrapper: {
+    margin: "3%",
   },
   movieCardWrapper: {
     display: "flex",
@@ -23,6 +30,11 @@ const useStyles = makeStyles({
   },
 })
 
+const pulldownInfo = {
+  label: "Country",
+  options: ["US", "SE"],
+}
+
 const Home: React.FC = () => {
   const classes = useStyles()
   const [todaysMovies, setTodaysMovies] = useState<Movie[]>([])
@@ -30,9 +42,14 @@ const Home: React.FC = () => {
     (state: AppState) => state.movieState.searchedMovies
   )
   console.log(todaysMovies)
+  const selectedCountry = useSelector(
+    (state: AppState) => state.movieState.selectedCountry
+  )
+
   useEffect(() => {
+    setTodaysMovies([])
     movieAxios
-      .get("/schedule?country=SE")
+      .get(`/schedule?country=${selectedCountry}`)
       .then((res) => {
         console.log("res.data at Home>>>", res.data)
         if (res.data.length === 0) {
@@ -40,14 +57,14 @@ const Home: React.FC = () => {
           return void 0
         } else {
           let tempArray: Movie[] = []
-          res.data.array.forEach((movieInfo: any) => {
+          res.data.forEach((movieInfo: any) => {
             const movieData: Movie = {
               id: movieInfo.id,
               title: movieInfo.name,
-              image: movieInfo.image.original,
+              image: movieInfo.show.image.original || undefined,
               seasonNumber: movieInfo.season,
               episodeNumber: movieInfo.number,
-              summary: movieInfo.summary,
+              summary: movieInfo.summary || "No summary",
               detailUrl: movieInfo.url,
             }
             tempArray.push(movieData)
@@ -56,35 +73,41 @@ const Home: React.FC = () => {
         }
       })
       .catch((err) => console.log(err))
-  }, [])
+  }, [selectedCountry])
 
   return (
     <div className={classes.Home}>
       <Header title="Home" />
-      {todaysMovies.length > 0 ? (
-        todaysMovies.map((movie: Movie) => {
-          return (
-            <div>
-              <p>{movie.title}</p>
-              <img src={movie.image} alt={movie.title} />
-              {movie.summary && <div>movie.summary</div>}
-            </div>
-          )
-        })
-      ) : searchedMoviesList.length > 0 ? (
-        <div className={classes.searchMoviesWrapper}>
-          <div>Search Result</div>
-          <Grid container justify="center" spacing={3}>
-            {searchedMoviesList.map((searchedMovie) => (
-              <Grid item xs={12} sm={6} md={4}>
+      <div className={classes.moviesWrapper}>
+        <Grid container justify="center" spacing={3}>
+          {searchedMoviesList.length > 0 ? (
+            searchedMoviesList.map((searchedMovie, index) => (
+              <Grid key={index} item xs={12} sm={6} md={4}>
                 <MovieCard {...searchedMovie} />
               </Grid>
-            ))}
-          </Grid>
-        </div>
-      ) : (
-        <div>No Schedules Movies today</div>
-      )}
+            ))
+          ) : (
+            <>
+              <Grid className={classes.countrySelectWrapper} item xs={12}>
+                <h3>Today's shows in ...</h3>
+                <Pulldown
+                  label={pulldownInfo.label}
+                  options={pulldownInfo.options}
+                />
+              </Grid>
+              {todaysMovies.length > 0 ? (
+                todaysMovies.map((movie: Movie, index) => (
+                  <Grid key={index} item xs={12} sm={6} md={4}>
+                    <MovieCard {...movie} />
+                  </Grid>
+                ))
+              ) : (
+                <div>No Schedules Shows today</div>
+              )}
+            </>
+          )}
+        </Grid>
+      </div>
     </div>
   )
 }
