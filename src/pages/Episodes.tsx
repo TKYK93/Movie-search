@@ -2,7 +2,7 @@ import { Grid, IconButton, makeStyles } from "@material-ui/core"
 import { ArrowBackIosOutlined } from "@material-ui/icons"
 import React, { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useHistory } from "react-router"
+import { useHistory, useLocation } from "react-router"
 import Header from "../components/Header"
 import MovieCard from "../components/MovieCard"
 import { clearSearchedMovies } from "../redux/movieRedux/movieActions"
@@ -12,6 +12,9 @@ const useStyles = makeStyles({
   searchMoviesWrapper: {
     padding: "0 3%",
   },
+  backButton: {
+    float: "left",
+  },
   movieCardWrapper: {
     display: "flex",
     flexDirection: "row",
@@ -19,9 +22,15 @@ const useStyles = makeStyles({
   },
 })
 
+interface LocationStateProps {
+  from: string
+}
+
 const Episodes: React.FC = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const location = useLocation()
+  const locationState = location.state as LocationStateProps
   const history = useHistory()
   const episodes = useSelector(
     (state: AppState) => state.movieState.movieEpisodes
@@ -34,7 +43,10 @@ const Episodes: React.FC = () => {
   }, [])
 
   const backButtonhandler = () => {
-    // dispatch(clearSearchedMovies())
+    // clear the SearchedMovies state in Redux only when singleSearched (the func in MovieCard.tsx)
+    if (locationState?.from !== "detail" || undefined) {
+      dispatch(clearSearchedMovies())
+    }
     history.goBack()
   }
 
@@ -43,9 +55,12 @@ const Episodes: React.FC = () => {
       <Header title="Episodes" />
       {episodes.length > 0 ? (
         <div className={classes.searchMoviesWrapper}>
-          <IconButton edge="start" onClick={() => backButtonhandler()}>
+          <IconButton
+            className={classes.backButton}
+            onClick={() => backButtonhandler()}
+          >
             <ArrowBackIosOutlined />
-            back
+            Back
           </IconButton>
           <Grid container justify="center" spacing={3}>
             {episodes.map((episodes, index) => (

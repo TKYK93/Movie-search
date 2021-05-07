@@ -20,6 +20,7 @@ import { clearMovieEpisodes } from "../redux/movieRedux/movieActions"
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown"
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp"
 import { IconButton } from "@material-ui/core"
+import { HistoryOutlined } from "@material-ui/icons"
 
 const useStyles = makeStyles({
   root: {
@@ -33,6 +34,9 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  summary: {
+    marginBottom: 0,
   },
 })
 
@@ -63,7 +67,16 @@ const MovieCard: React.FC<MovieCardProps> = (props) => {
     switch (props.purpose) {
       case "episodes":
         await dispatch(getEpisodesFromAPI(props.id))
-        await history.push("/episodes")
+        // "props.summary === 0" means this MovieCard component is used in Detail Page
+        // MovieCard in Detail Page has a button to go back to the previous page(Detail)
+        if (props.summary === "") {
+          await history.push({
+            pathname: "/episodes",
+            state: { from: "detail" },
+          })
+        } else {
+          await history.push("episodes")
+        }
         break
       case "detail":
         await dispatch(getMovieDetailFromAPI(id))
@@ -98,6 +111,7 @@ const MovieCard: React.FC<MovieCardProps> = (props) => {
           color="textSecondary"
           component="p"
           align="left"
+          className={classes.summary}
         >
           {/* embedd HTML after truncating "summary" because "summary" is a HTML elements */}
           {showAllSummary
