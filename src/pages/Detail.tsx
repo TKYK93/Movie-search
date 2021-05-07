@@ -14,6 +14,7 @@ import { ArrowBackIosOutlined } from "@material-ui/icons"
 import { useHistory } from "react-router"
 import {
   clearMovieDetail,
+  clearMovieSeasons,
   clearSearchedMovies,
 } from "../redux/movieRedux/movieActions"
 import MovieCard from "../components/MovieCard"
@@ -38,7 +39,10 @@ const useStyles = makeStyles({
   genreWrapper: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
+    marginTop: "3%",
+  },
+  genreItem: {
+    marginRight: "3%",
   },
   seasonsWrapper: {
     padding: "5%",
@@ -76,6 +80,7 @@ const Detail: React.FC = () => {
 
   const backButtonHandler = () => {
     dispatch(clearMovieDetail())
+    dispatch(clearMovieSeasons())
     history.goBack()
   }
 
@@ -102,6 +107,17 @@ const Detail: React.FC = () => {
             <Grid container>
               <Grid item xs={12} md={4} className={classes.movieImage}>
                 <img src={movieDetail.image} alt={movieDetail.title} />
+                <div className={classes.genreWrapper}>
+                  {movieDetail.genres?.map((genre, index) => (
+                    <Typography
+                      component="p"
+                      key={index}
+                      className={classes.genreItem}
+                    >
+                      {genre}
+                    </Typography>
+                  ))}
+                </div>
               </Grid>
               <Grid item xs={12} md={8}>
                 <Typography variant="body2" component="p" align="left">
@@ -109,16 +125,14 @@ const Detail: React.FC = () => {
                     ? parse(movieDetail.summary)
                     : "No summary"}
                 </Typography>
-                <div className={classes.genreWrapper}>
-                  {movieDetail.genres?.map((genre) => (
-                    <p>{genre}</p>
-                  ))}
-                </div>
-                <p>Total Episodes: {movieDetail.episodeNumber}</p>
-                <p>
+
+                <Typography component="p" align="left">
+                  Total Eisodes: {movieDetail.episodeNumber}
+                </Typography>
+                <Typography component="p" align="left">
                   Rating:{" "}
                   {movieDetail.rating ? movieDetail.rating : "No Rating"}
-                </p>
+                </Typography>
               </Grid>
             </Grid>
           </Grid>

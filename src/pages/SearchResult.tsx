@@ -12,6 +12,14 @@ const useStyles = makeStyles({
   searchMoviesWrapper: {
     padding: "0 3%",
   },
+  contentHeaderWrapper: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  contentHeaderTitle: {
+    flex: 1,
+    paddingRight: "25%",
+  },
   movieCardWrapper: {
     display: "flex",
     flexDirection: "row",
@@ -43,11 +51,13 @@ const SearchedResult: React.FC = () => {
       <Header title="Search Result" />
       {searchedMoviesList.length > 0 ? (
         <div className={classes.searchMoviesWrapper}>
-          <IconButton edge="start" onClick={() => backButtonHandler()}>
-            <ArrowBackIosOutlined />
-            back to home
-          </IconButton>
-          <h3>Search Result</h3>
+          <div className={classes.contentHeaderWrapper}>
+            <IconButton edge="start" onClick={() => backButtonHandler()}>
+              <ArrowBackIosOutlined />
+              back to home
+            </IconButton>
+            <h3 className={classes.contentHeaderTitle}>Search Result</h3>
+          </div>
           <Grid container justify="center" spacing={3}>
             {searchedMoviesList.map((searchedMovie, index) => (
               <Grid key={index} item xs={12} sm={6} md={4}>

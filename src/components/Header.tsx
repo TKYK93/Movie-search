@@ -11,6 +11,9 @@ const useStyles = makeStyles(() => ({
   appBar: {
     minHeight: "60px",
   },
+  headerTitle: {
+    marginRight: "5%",
+  },
 }))
 
 interface HeaderProps {
@@ -23,7 +26,11 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar variant="dense">
-        <Typography variant="h6" color="inherit">
+        <Typography
+          variant="h6"
+          color="inherit"
+          className={classes.headerTitle}
+        >
           {title}
         </Typography>
         {title !== "Detail" && <SearchBar />}
