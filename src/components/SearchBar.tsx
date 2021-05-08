@@ -64,13 +64,9 @@ const SearchBar: React.FC = () => {
 
   return (
     <Paper component="form" className={classes.root}>
-      <IconButton className={classes.iconButton} aria-label="menu">
-        <MenuIcon />
-      </IconButton>
-      <Divider orientation="vertical" flexItem />
       <InputBase
         className={classes.input}
-        placeholder="Search Movies"
+        placeholder="Search Series"
         onChange={(e) => {
           searchSingleMovieHandler(e.target.value)
         }}

@@ -23,6 +23,28 @@ import { ActionType } from "../types"
     type: 'CLEAR_MOVIE_DETAIL',
   } as const)
 
+  export const getMovieSeasons = (movieSeasons: Movie[]) =>
+  ({
+    type: 'GET_MOVIE_SEASONS',
+    movieSeasons,
+  } as const)
+
+  export const clearMovieSeasons = () =>
+  ({
+    type: 'CLEAR_MOVIE_SEASONS',
+  } as const)
+
+  export const getMovieEpisodes = (movieEpisodes: Movie[]) =>
+  ({
+    type: 'GET_MOVIE_EPISODES',
+    movieEpisodes,
+  } as const)
+
+  export const clearMovieEpisodes = () =>
+  ({
+    type: 'CLEAR_MOVIE_EPISODES',
+  } as const)
+
   export const setCountry = (country: string) =>
   ({
     type: 'SET_COUNTRY',
@@ -34,4 +56,8 @@ export type MovieActions =
 | ActionType<typeof clearSearchedMovies> 
 | ActionType<typeof getMovieDetail> 
 | ActionType<typeof clearMovieDetail>
+| ActionType<typeof getMovieSeasons>
+| ActionType<typeof clearMovieSeasons>
+| ActionType<typeof getMovieEpisodes>
+| ActionType<typeof clearMovieEpisodes>
 | ActionType<typeof setCountry>

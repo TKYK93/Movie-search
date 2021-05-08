@@ -1,21 +1,24 @@
 import { Grid, IconButton, makeStyles } from "@material-ui/core"
-import { ArrowBackIosOutlined } from "@material-ui/icons"
-import React, { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
+import { ArrowBackIosOutlined, HistoryOutlined } from "@material-ui/icons"
+import React, { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { useHistory } from "react-router"
 import Header from "../components/Header"
 import MovieCard from "../components/MovieCard"
-import { Movie } from "../models/Movie"
+import { clearSearchedMovies } from "../redux/movieRedux/movieActions"
 import { AppState } from "../redux/store"
 
 const useStyles = makeStyles({
-  Home: {
-    // marign: 0,
-    // padding: 0,
-    // boxSizing: "border-box",
-  },
   searchMoviesWrapper: {
     padding: "0 3%",
+  },
+  contentHeaderWrapper: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  contentHeaderTitle: {
+    flex: 1,
+    paddingRight: "25%",
   },
   movieCardWrapper: {
     display: "flex",
@@ -26,25 +29,39 @@ const useStyles = makeStyles({
 
 const SearchedResult: React.FC = () => {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const history = useHistory()
   const searchedMoviesList = useSelector(
     (state: AppState) => state.movieState.searchedMovies
   )
 
+  useEffect(() => {
+    if (searchedMoviesList.length === 0) {
+      history.replace("/home")
+    }
+  }, [])
+
+  const backButtonHandler = () => {
+    dispatch(clearSearchedMovies())
+    history.replace("/home")
+  }
+
   return (
-    <div className={classes.Home}>
-      <Header title="SearchedResult" />
+    <div className="SearchResult">
+      <Header title="Search Result" />
       {searchedMoviesList.length > 0 ? (
         <div className={classes.searchMoviesWrapper}>
-          <IconButton edge="start" onClick={() => history.push("/home")}>
-            <ArrowBackIosOutlined />
-            back to home
-          </IconButton>
-          <h3>Search Result</h3>
+          <div className={classes.contentHeaderWrapper}>
+            <IconButton edge="start" onClick={() => backButtonHandler()}>
+              <ArrowBackIosOutlined />
+              back to home
+            </IconButton>
+            <h3 className={classes.contentHeaderTitle}>Search Result</h3>
+          </div>
           <Grid container justify="center" spacing={3}>
             {searchedMoviesList.map((searchedMovie, index) => (
               <Grid key={index} item xs={12} sm={6} md={4}>
-                <MovieCard {...searchedMovie} />
+                <MovieCard {...searchedMovie} purpose="detail" />
               </Grid>
             ))}
           </Grid>
