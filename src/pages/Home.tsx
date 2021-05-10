@@ -7,6 +7,7 @@ import MovieCard from "../components/MovieCard"
 import Pulldown from "../components/Pulldown"
 import { Movie } from "../models/Movie"
 import { AppState } from "../redux/store"
+import SearchIcon from "@material-ui/icons/Search"
 
 const useStyles = makeStyles({
   countrySelectWrapper: {
@@ -16,7 +17,10 @@ const useStyles = makeStyles({
     justifyContent: "center",
   },
   moviesWrapper: {
-    margin: "3%",
+    margin: "0 3% 3% 3%",
+  },
+  searchIcon: {
+    verticalAlign: "middle",
   },
   movieCardWrapper: {
     display: "flex",
@@ -58,11 +62,12 @@ const Home: React.FC = () => {
           res.data.forEach((movieInfo: any) => {
             const movieData: Movie = {
               id: movieInfo.id,
-              title: movieInfo.name,
-              image: movieInfo.show.image.original || undefined,
+              title: movieInfo.show.name,
+              image: movieInfo.show.image?.original || undefined,
               seasonNumber: movieInfo.season,
               episodeNumber: movieInfo.number,
-              summary: movieInfo.summary || "No summary",
+              summary:
+                movieInfo.summary || movieInfo.show.summary || "No summary",
               detailUrl: movieInfo.url,
             }
             tempArray.push(movieData)
@@ -79,11 +84,21 @@ const Home: React.FC = () => {
       <div className={classes.moviesWrapper}>
         <Grid container justify="center" spacing={3}>
           {searchedMoviesList.length > 0 ? (
-            searchedMoviesList.map((searchedMovie, index) => (
-              <Grid key={index} item xs={12} sm={6} md={4}>
-                <MovieCard {...searchedMovie} purpose="episodes" />
+            <>
+              <Grid item xs={12}>
+                <h4>
+                  Are you looking for the following series?
+                  <br />
+                  If not, please press{" "}
+                  <SearchIcon className={classes.searchIcon} /> above!
+                </h4>
               </Grid>
-            ))
+              {searchedMoviesList.map((searchedMovie, index) => (
+                <Grid key={index} item xs={12} sm={6} md={4}>
+                  <MovieCard {...searchedMovie} purpose="episodes" />
+                </Grid>
+              ))}
+            </>
           ) : (
             <>
               <Grid className={classes.countrySelectWrapper} item xs={12}>

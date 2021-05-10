@@ -1,10 +1,8 @@
 import React, { useState } from "react"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import InputLabel from "@material-ui/core/InputLabel"
-import FormHelperText from "@material-ui/core/FormHelperText"
 import FormControl from "@material-ui/core/FormControl"
 import Select from "@material-ui/core/Select"
-import NativeSelect from "@material-ui/core/NativeSelect"
 import { useDispatch } from "react-redux"
 import { setCountry } from "../redux/movieRedux/movieActions"
 

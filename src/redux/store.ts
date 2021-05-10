@@ -1,18 +1,11 @@
-import { combineReducers, createStore, compose, applyMiddleware } from 'redux'
+import { combineReducers } from 'redux'
 import thunk from 'redux-thunk'
 import { MovieReducer, MovieState } from './movieRedux/movieReducer'
+import { configureStore } from '@reduxjs/toolkit'
 
 export type AppState = {
   movieState: MovieState
 }
-
-interface ExtendedWindow extends Window {
-  __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose
-}
-declare let window: ExtendedWindow
-
-const composeReduxDevToolsEnhancers =
-  (typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose
 
 export const rootReducer = combineReducers<AppState>({
   movieState: MovieReducer,
@@ -20,6 +13,11 @@ export const rootReducer = combineReducers<AppState>({
 
 export type RootReducer = ReturnType<typeof rootReducer>
 
-const store = createStore(rootReducer, composeReduxDevToolsEnhancers(applyMiddleware(thunk)))
+const store = configureStore({
+  reducer: rootReducer,
+  middleware: [thunk],
+})
+
+export type AppDispatch = typeof store.dispatch
 
 export default store

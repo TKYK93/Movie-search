@@ -5,7 +5,7 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core"
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import Header from "../components/Header"
 import { AppState } from "../redux/store"
@@ -15,7 +15,6 @@ import { useHistory } from "react-router"
 import {
   clearMovieDetail,
   clearMovieSeasons,
-  clearSearchedMovies,
 } from "../redux/movieRedux/movieActions"
 import MovieCard from "../components/MovieCard"
 
@@ -73,10 +72,10 @@ const Detail: React.FC = () => {
   )
 
   useEffect(() => {
-    if (searchedMovies.length === 0) {
-      history.replace("/home")
-    }
-  }, [])
+    // if (searchedMovies.length === 0) {
+    //   history.replace("/home")
+    // }
+  }, [searchedMovies, history])
 
   const backButtonHandler = () => {
     dispatch(clearMovieDetail())
@@ -108,10 +107,11 @@ const Detail: React.FC = () => {
               <Grid item xs={12} md={4} className={classes.movieImage}>
                 <img src={movieDetail.image} alt={movieDetail.title} />
                 <div className={classes.genreWrapper}>
+                  <Typography component="p">Genres: </Typography>
                   {movieDetail.genres?.map((genre, index) => (
                     <Typography
                       component="p"
-                      key={index}
+                      key={`genres-${index}`}
                       className={classes.genreItem}
                     >
                       {genre}
@@ -127,7 +127,7 @@ const Detail: React.FC = () => {
                 </Typography>
 
                 <Typography component="p" align="left">
-                  Total Eisodes: {movieDetail.episodeNumber}
+                  Total Episodes: {movieDetail.episodeNumber}
                 </Typography>
                 <Typography component="p" align="left">
                   Rating:{" "}
@@ -142,13 +142,8 @@ const Detail: React.FC = () => {
             <h4>Total Seasons: {movieDetail.seasonNumber}</h4>
             <Grid container spacing={3}>
               {movieSeasons.map((season, index) => (
-                <Grid item xs={12} md={3}>
-                  <MovieCard
-                    key={index}
-                    {...season}
-                    summary={""}
-                    purpose="episodes"
-                  />
+                <Grid item xs={12} md={3} key={`movieCard-${index}`}>
+                  <MovieCard {...season} summary={""} purpose="episodes" />
                 </Grid>
               ))}
             </Grid>
