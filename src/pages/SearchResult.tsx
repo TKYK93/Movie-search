@@ -1,5 +1,5 @@
 import { Grid, IconButton, makeStyles } from "@material-ui/core"
-import { ArrowBackIosOutlined, HistoryOutlined } from "@material-ui/icons"
+import { ArrowBackIosOutlined } from "@material-ui/icons"
 import React, { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useHistory } from "react-router"
@@ -39,7 +39,7 @@ const SearchedResult: React.FC = () => {
     if (searchedMoviesList.length === 0) {
       history.replace("/home")
     }
-  }, [])
+  }, [searchedMoviesList, history])
 
   const backButtonHandler = () => {
     dispatch(clearSearchedMovies())

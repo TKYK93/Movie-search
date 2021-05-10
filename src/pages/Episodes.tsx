@@ -40,7 +40,7 @@ const Episodes: React.FC = () => {
     if (episodes.length === 0) {
       history.replace("/home")
     }
-  }, [])
+  }, [history, episodes])
 
   const backButtonhandler = () => {
     // clear the SearchedMovies state in Redux only when singleSearched (the func in MovieCard.tsx)
@@ -64,7 +64,7 @@ const Episodes: React.FC = () => {
           </IconButton>
           <Grid container justify="center" spacing={3}>
             {episodes.map((episodes, index) => (
-              <Grid key={index} item xs={12} sm={6} md={4}>
+              <Grid key={`movieCardGrid-${index}`} item xs={12} sm={6} md={4}>
                 <MovieCard {...episodes} purpose="episode" />
               </Grid>
             ))}
