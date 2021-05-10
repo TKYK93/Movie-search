@@ -95,8 +95,8 @@ export const getMovieDetailFromAPI = (movieId: number): ThunkAction<void, RootRe
   .catch((err) => console.log(err))
 }
 
-export const getEpisodesFromAPI = (seasonId: number): ThunkAction<void, RootReducer, unknown, Action<string>> => async (dispatch) => {
-  movieAxios
+export const getEpisodesFromAPI = (seasonId: number): ThunkAction<Promise<any>, RootReducer, unknown, Action<string>> => async (dispatch) => {
+  return movieAxios
   .get(`/seasons/${seasonId}/episodes`)
   .then((res) => {
     if (!res.data) {
